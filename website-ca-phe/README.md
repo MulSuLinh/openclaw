@@ -140,11 +140,11 @@ Website có một khung chat nổi **“Hỏi Mộc AI”** ở góc dưới bê
 
 ## Quản lý bán hàng và chi tiêu
 
-Mở trang [quan-ly.html](./quan-ly.html) để dùng bảng điều khiển quản lý Mộc Coffee.
+Khu vực quản lý đã được tích hợp ngay trong website chính: mở [index.html#quan-ly](./index.html#quan-ly), hoặc vào website rồi chọn **Quản lý** trên thanh điều hướng. Không cần rời sang trang khác để dùng các chức năng này.
 
-- **Bán hàng:** ghi ngày bán, sản phẩm, số lượng, đơn giá, khách hàng/mã đơn và hình thức thanh toán; hệ thống tự tính thành tiền.
-- **Chi tiêu:** ghi khoản chi, danh mục (nguyên liệu, mặt bằng, nhân sự, điện nước, vận chuyển, marketing...), số tiền và hình thức chi.
-- **Báo cáo:** xem tổng doanh thu, tổng chi tiêu, chênh lệch thu–chi và số giao dịch theo khoảng ngày; có thể xuất CSV để lưu hoặc mở bằng bảng tính.
-- **Lưu dữ liệu:** trình duyệt lưu dữ liệu trong `localStorage` trên thiết bị hiện tại.
+- **Bán hàng:** ghi ngày bán, sản phẩm, số lượng, đơn giá, khách hàng/mã đơn và phương thức thanh toán; website tự tính thành tiền.
+- **Chi tiêu:** ghi khoản chi, danh mục, số tiền, hình thức thanh toán và ghi chú.
+- **Thống kê:** tổng doanh thu, tổng chi tiêu, chênh lệch thu–chi và số giao dịch theo khoảng ngày; hỗ trợ xuất CSV.
+- **Lưu dữ liệu:** trình duyệt lưu ở `localStorage` trên thiết bị hiện tại.
 
-**Giới hạn:** Đây là trang demo phía trình duyệt, chưa có tài khoản đăng nhập, máy chủ hay cơ sở dữ liệu chung. Dữ liệu không tự đồng bộ giữa máy tính/điện thoại và đơn đặt hàng ở trang cửa hàng chưa tự động nhập vào bảng bán hàng. Không dùng bản demo này làm sổ kế toán chính thức hoặc lưu thông tin nhạy cảm.
+**Giới hạn:** Đây là bản demo phía trình duyệt, chưa có đăng nhập hoặc cơ sở dữ liệu chung; dữ liệu không tự đồng bộ giữa các thiết bị và đơn đặt hàng ở giỏ hàng chưa tự động nhập vào danh sách bán hàng. File [quan-ly.html](./quan-ly.html) vẫn được giữ như bản quản lý độc lập tùy chọn.
