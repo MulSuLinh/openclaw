@@ -144,6 +144,61 @@ def delete_record(records):
         print("Đã huỷ.")
 
 
+
+def recommend_spending(records):
+    """Phân tích thu chi tháng và gợi ý tiết kiệm dựa trên dữ liệu đã nhập."""
+    month = input(f"Xem tháng YYYY-MM (Enter = {date.today().strftime('%Y-%m')}): ").strip()
+    if not month:
+        month = date.today().strftime("%Y-%m")
+    try:
+        datetime.strptime(month, "%Y-%m")
+    except ValueError:
+        print("Định dạng tháng không hợp lệ. Hãy nhập theo dạng YYYY-MM.")
+        return
+
+    selected = filter_month(records, month)
+    income, expense, balance = totals(selected)
+    print(f"\\n=== GỢI Ý CHI TIÊU VÀ TIẾT KIỆM THÁNG {month} ===")
+    print(f"Tổng thu đã ghi: {money(income)}")
+    print(f"Tổng chi đã ghi: {money(expense)}")
+    print(f"Số dư hiện tại:  {money(balance)}")
+
+    if not selected or income <= 0:
+        print("\\nChưa đủ dữ liệu thu nhập của tháng này để lập gợi ý đáng tin cậy.")
+        print("Hãy nhập các khoản thu và chi thường xuyên trước.")
+        return
+
+    by_category = {}
+    for item in selected:
+        if item.get("type") == "chi":
+            category = item.get("category", "Khác")
+            by_category[category] = by_category.get(category, 0) + item.get("amount", 0)
+
+    if by_category:
+        top_category, top_amount = max(by_category.items(), key=lambda pair: pair[1])
+        print(f"\\nDanh mục chi nhiều nhất: {top_category} ({money(top_amount)}).")
+        print("Gợi ý: xem lại các khoản không thiết yếu trong danh mục này trước khi cắt giảm nhu cầu thiết yếu.")
+
+    if balance < 0:
+        print("\\nBạn đang chi nhiều hơn số thu đã ghi.")
+        print("- Ưu tiên tiền ăn uống, đi lại cần thiết, học tập và các hoá đơn bắt buộc.")
+        print("- Tạm hoãn mua sắm hoặc giải trí chưa cần thiết.")
+        print("- Lập hạn mức cho từng danh mục và ghi lại mọi khoản chi.")
+    else:
+        suggested_saving = income * 0.10
+        print(f"\\nMục tiêu tiết kiệm tham khảo: {money(suggested_saving)} (10% thu nhập).")
+        if balance >= suggested_saving:
+            print("Theo số liệu hiện có, bạn có thể cân nhắc để riêng khoản này sau khi đã đảm bảo các chi phí thiết yếu.")
+        else:
+            print("Số dư hiện tại thấp hơn mục tiêu tham khảo; hãy chọn mức tiết kiệm nhỏ hơn, phù hợp với nhu cầu thiết yếu.")
+        print("- Chia tiền thành các nhóm: thiết yếu, học tập/đi lại, mong muốn cá nhân và tiết kiệm.")
+        print("- So sánh giá và lập danh sách trước khi mua; tránh mua theo cảm xúc.")
+        print("- Để dành một khoản dự phòng nhỏ nếu điều kiện cho phép.")
+
+    print("\\nLưu ý: Đây là gợi ý dựa trên giao dịch bạn đã nhập, không tự truy cập tài khoản ngân hàng.")
+    print("Hãy ưu tiên nhu cầu thiết yếu; không cần ép tiết kiệm nếu tiền chưa đủ trang trải.")
+
+
 def set_budget():
     print("\nTính năng ngân sách chưa lưu mức ngân sách tự động.")
     print("Bạn có thể dùng tổng kết tháng để theo dõi chi tiêu; phiên bản sau có thể bổ sung hạn mức.")
@@ -160,6 +215,7 @@ def main():
         print("3. Xem lịch sử giao dịch")
         print("4. Tổng kết theo tháng")
         print("5. Xoá giao dịch")
+        print("6. Đề xuất tiết kiệm và chi tiêu")
         print("0. Thoát")
         choice = input("Chọn chức năng: ").strip()
         if choice == "1":
@@ -172,11 +228,13 @@ def main():
             show_summary(records)
         elif choice == "5":
             delete_record(records)
+        elif choice == "6":
+            recommend_spending(records)
         elif choice == "0":
             print("Dữ liệu đã được lưu. Tạm biệt!")
             break
         else:
-            print("Không có lựa chọn này. Hãy nhập 0-5.")
+            print("Không có lựa chọn này. Hãy nhập 0-6.")
         records = load_records()
 
 
