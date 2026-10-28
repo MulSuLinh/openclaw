@@ -17,14 +17,31 @@ python quan_ly_ca_phe.py
 
 Trên một số máy Windows, dùng `py quan_ly_ca_phe.py`.
 
-## Sử dụng hằng ngày
-1. Khi mở chương trình, ứng dụng thử lấy giá tham khảo mới từ Internet. Chọn **9** để cập nhật lại theo yêu cầu.
-2. Chọn **2** nếu muốn tự nhập giá từ nguồn khác hoặc cập nhật loại cà phê chưa được API cung cấp.
-3. Chọn **4** khi mua/nhập cà phê vào kho.
-4. Chọn **5** khi bán hàng. Chương trình ngăn bán vượt lượng tồn kho đã ghi.
-5. Chọn **6** để kiểm tra tồn kho.
-6. Chọn **1** hoặc **3** để xem giá theo ngày và lịch sử biến động.
-7. Chọn **8** để xem báo cáo tháng.
+## Cách dùng nhanh cho người mới
+
+Khi chạy chương trình, bạn sẽ thấy bảng tổng quan và menu. Chỉ cần nhập số tương ứng:
+
+1. **Xem giá cà phê**.
+2. **Nhập hàng / mua cà phê**.
+3. **Bán cà phê**.
+4. **Kiểm tra hàng trong kho**.
+5. **Xem doanh thu và lãi ước tính**.
+6. **Xem lịch sử giao dịch**.
+7. **Cập nhật giá thủ công**.
+8. **Xem lịch sử giá**.
+9. **Lấy giá tham khảo từ Internet**.
+0. **Thoát**.
+
+Chương trình không tự kết nối Internet khi mở. Chỉ chọn mục 9 khi muốn thử lấy giá tham khảo mới.
+
+Khi nhập hoặc bán hàng, chương trình sẽ hỏi lần lượt mặt hàng, số lượng, đơn giá và ngày giao dịch. Hãy nhập số lượng bằng kg và đơn giá bằng VNĐ/kg. Trước khi bán, cần nhập hàng vào kho để hệ thống kiểm tra số lượng còn lại.
+
+Bạn cũng có thể gõ câu đơn giản thay vì chọn số, ví dụ:
+- `nhập 20 kg Robusta giá 85000 đồng/kg`
+- `bán 5 kg Robusta giá 100000 đồng/kg`
+- `xem tồn kho`
+- `xem giá cà phê hôm nay`
+- `báo cáo tháng này`
 
 ## Nhập yêu cầu bằng tiếng Việt
 - Bộ nhận diện hiện tại dùng từ khóa và quy tắc trích xuất, chưa phải mô hình AI tổng quát.
