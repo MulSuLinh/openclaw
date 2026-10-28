@@ -5,6 +5,8 @@ Dữ liệu được lưu cục bộ trong ca_phe_data.json. Giá thị trườn
 động lấy từ Internet; người dùng cập nhật theo nguồn giá đáng tin cậy.
 """
 import json
+import re
+import unicodedata
 from datetime import date, datetime
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -351,6 +353,57 @@ def show_report(data):
     print("Lãi gộp chỉ là ước tính theo giá vốn bình quân; chưa trừ vận chuyển, nhân công và chi phí khác.")
 
 
+
+def normalize_request(text):
+    """Chuẩn hóa tiếng Việt để nhận diện yêu cầu gõ tự do."""
+    text = unicodedata.normalize("NFD", text.lower())
+    text = "".join(char for char in text if unicodedata.category(char) != "Mn")
+    return re.sub(r"[^a-z0-9]+", " ", text).strip()
+
+
+def handle_natural_request(data, request_text):
+    """Điều hướng một số yêu cầu tiếng Việt phổ biến trong CLI (không dùng AI)."""
+    request = normalize_request(request_text)
+    if not request:
+        return False
+
+    if any(word in request for word in ("gia ca phe", "gia hom nay", "bao gia", "gia robusta", "gia arabica")):
+        show_prices(data)
+        return True
+    if any(word in request for word in ("ton kho", "con bao nhieu", "hang con", "kiem ke")):
+        show_inventory(data)
+        return True
+    if any(word in request for word in ("lich su gia", "bien dong gia", "gia thay doi")):
+        show_price_history(data)
+        return True
+    if any(word in request for word in ("lich su giao dich", "lich su nhap", "lich su ban", "cac giao dich")):
+        show_transactions(data)
+        return True
+    if any(word in request for word in ("bao cao", "doanh thu", "lai gop", "tong tien nhap")):
+        show_report(data)
+        return True
+    if any(word in request for word in ("cap nhat gia", "lay gia moi", "gia tu internet", "gia tren mang")):
+        fetch_market_prices(data)
+        return True
+    if any(word in request for word in ("nhap hang", "mua ca phe", "ghi nhan nhap")):
+        record_transaction(data, "nhap")
+        return True
+    if any(word in request for word in ("ban ca phe", "ghi nhan ban", "tao giao dich ban")):
+        record_transaction(data, "ban")
+        return True
+    return False
+
+
+def show_request_help():
+    print("\\nBạn có thể gõ yêu cầu bằng tiếng Việt, ví dụ:")
+    print("- Cho tôi biết giá cà phê hôm nay")
+    print("- Xem tồn kho hiện tại")
+    print("- Xem lịch sử giá")
+    print("- Báo cáo doanh thu tháng này")
+    print("- Lấy giá mới từ Internet")
+    print("- Nhập hàng cà phê / Bán cà phê")
+    print("Lưu ý: đây là nhận diện từ khóa cơ bản, chưa phải trợ lý AI hiểu mọi câu.")
+
 def main():
     data = load_data()
     print("\nĐang thử cập nhật giá cà phê tham khảo từ Internet...")
@@ -373,14 +426,17 @@ def main():
         for key, (label, _) in actions.items():
             print(f"{key}. {label}")
         print("0. Thoát")
-        choice = input("Chọn chức năng: ").strip()
-        if choice == "0":
+        choice = input("Chọn chức năng hoặc nhập yêu cầu bằng tiếng Việt (gõ 'help' để xem ví dụ): ").strip()
+        if choice == "0" or normalize_request(choice) in ("thoat", "ket thuc", "exit", "quit"):
             print("Đã thoát chương trình.")
             break
         if choice in actions:
             actions[choice][1]()
-        else:
-            print("Lựa chọn không hợp lệ. Hãy nhập từ 0 đến 9.")
+        elif normalize_request(choice) in ("help", "tro giup", "huong dan"):
+            show_request_help()
+        elif not handle_natural_request(data, choice):
+            print("Mình chưa nhận diện được yêu cầu này.")
+            show_request_help()
 
 
 if __name__ == "__main__":
