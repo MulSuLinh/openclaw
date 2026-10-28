@@ -120,3 +120,19 @@ Mở thư mục `website-ca-phe` trong File Explorer và nhấp đúp `index.htm
 ## Lưu ý về GitHub Pages
 
 Để xuất bản bản sao nằm trong `python-journey/projects/moc-coffee`, vào repository `python-journey` → **Settings → Pages**, chọn nguồn triển khai phù hợp, sau đó chờ GitHub hoàn tất và kiểm tra trạng thái xuất bản. Đường dẫn dự kiến là https://mulsulinh.github.io/python-journey/projects/moc-coffee/; không nên xem đây là website đang hoạt động cho đến khi triển khai được xác nhận.
+
+## Trợ lý Mộc Coffee (bản demo)
+
+Website có một khung chat nổi **“Hỏi Mộc AI”** ở góc dưới bên phải. Trợ lý có thể:
+- Trả lời câu hỏi cơ bản về sản phẩm và giá mẫu.
+- Gợi ý cà phê cho người mới dựa trên mô tả sản phẩm.
+- Hướng dẫn thêm sản phẩm vào giỏ và tạo nội dung đơn hàng.
+- Trả lời nhanh một số câu hỏi thường gặp về danh mục và giao hàng.
+
+**Lưu ý kỹ thuật:** phiên bản hiện tại là trợ lý hỏi đáp theo từ khóa chạy ngay trong trình duyệt, không cần API key. Đây chưa phải mô hình AI tạo sinh; câu trả lời có giới hạn và không gửi đơn hàng đến cửa hàng. Muốn kết nối AI thật, cần xây dựng backend gọi nhà cung cấp mô hình và lưu khóa API ở phía máy chủ, không đặt khóa bí mật trực tiếp trong HTML/JavaScript công khai.
+
+### Nhật ký cập nhật — Trợ lý chat
+- Thêm nút chat nổi và cửa sổ trò chuyện có thể mở/đóng.
+- Thêm câu hỏi gợi ý nhanh, ô nhập tin nhắn và phản hồi theo nhóm chủ đề.
+- Bổ sung thông báo rõ ràng về giới hạn của bản demo.
+- Đồng bộ phần giao diện trợ lý vào bản website-ca-phe trong openclaw và bản sao projects/moc-coffee trong python-journey.
