@@ -531,54 +531,54 @@ def show_dashboard(data):
         if t["type"] == "nhap" and t["date"] == today
     )
     print("\n" + "=" * 46)
-    print("       QUAN LY CA PHE - BAT DAU NHANH")
+    print("       QUẢN LÝ CÀ PHÊ - BẮT ĐẦU NHANH")
     print("=" * 46)
-    print(f"Hom nay: {date.today().strftime('%d/%m/%Y')}")
-    print(f"So loai ca phe: {len(data['products'])}")
-    print(f"Tong luong hang con trong kho: {total_stock:g} kg")
-    print(f"Tien nhap hang hom nay: {money(today_purchases)}")
-    print(f"Doanh thu hom nay: {money(today_sales)}")
+    print(f"Hôm nay: {date.today().strftime('%d/%m/%Y')}")
+    print(f"Số loại cà phê: {len(data['products'])}")
+    print(f"Tổng lượng hàng còn trong kho: {total_stock:g} kg")
+    print(f"Tiền nhập hàng hôm nay: {money(today_purchases)}")
+    print(f"Doanh thu hôm nay: {money(today_sales)}")
     print("-" * 46)
 
 
 def main():
     data = load_data()
     actions = {
-        "1": ("Xem gia ca phe", lambda: show_prices(data)),
-        "2": ("Nhap hang / mua ca phe", lambda: record_transaction(data, "nhap")),
-        "3": ("Ban ca phe", lambda: record_transaction(data, "ban")),
-        "4": ("Kiem tra hang trong kho", lambda: show_inventory(data)),
-        "5": ("Xem doanh thu va lai uoc tinh", lambda: show_report(data)),
-        "6": ("Xem lich su giao dich", lambda: show_transactions(data)),
-        "7": ("Cap nhat gia thu cong", lambda: update_prices(data)),
-        "8": ("Xem lich su gia", lambda: show_price_history(data)),
-        "9": ("Lay gia tham khao tu Internet", lambda: fetch_market_prices(data)),
+        "1": ("Xem giá cà phê", lambda: show_prices(data)),
+        "2": ("Nhập hàng / mua cà phê", lambda: record_transaction(data, "nhap")),
+        "3": ("Bán cà phê", lambda: record_transaction(data, "ban")),
+        "4": ("Kiểm tra hàng trong kho", lambda: show_inventory(data)),
+        "5": ("Xem doanh thu và lãi ước tính", lambda: show_report(data)),
+        "6": ("Xem lịch sử giao dịch", lambda: show_transactions(data)),
+        "7": ("Cập nhật giá thủ công", lambda: update_prices(data)),
+        "8": ("Xem lịch sử giá", lambda: show_price_history(data)),
+        "9": ("Lấy giá tham khảo từ Internet", lambda: fetch_market_prices(data)),
     }
 
     while True:
         show_dashboard(data)
-        print("BAN MUON LAM GI?")
+        print("BẠN MUỐN LÀM GÌ?")
         for key, (label, _) in actions.items():
             print(f" {key}. {label}")
-        print(" 0. Thoat chuong trinh")
-        print("\nMeo: Ban co the go yeu cau don gian, vi du:")
+        print(" 0. Thoát chương trình")
+        print("\nMẹo: Bạn có thể gõ yêu cầu đơn giản, ví dụ:")
         print(' - "nhap 20 kg Robusta gia 85000 dong/kg"')
         print(' - "ban 5 kg Robusta gia 100000 dong/kg"')
         print(' - "xem ton kho" hoac "bao cao thang nay"')
 
-        choice = input("\nNhap so 0-9 hoac yeu cau cua ban: ").strip()
+        choice = input("\nNhập số 0-9 hoặc yêu cầu của bạn: ").strip()
         normalized = normalize_request(choice)
         if choice == "0" or normalized in ("thoat", "ket thuc", "exit", "quit"):
-            print("Da thoat chuong trinh. Du lieu da duoc luu.")
+            print("Đã thoát chương trình. Dữ liệu đã được lưu.")
             break
         if choice in actions:
             actions[choice][1]()
         elif normalized in ("help", "tro giup", "huong dan", "vi du"):
             show_request_help()
         elif not handle_natural_request(data, choice):
-            print("\nMinh chua hieu yeu cau nay.")
+            print("\nMình chưa hiểu yêu cầu này.")
             show_request_help()
-        input("\nNhan Enter de quay lai menu...")
+        input("\nNhấn Enter để quay lại menu...")
 
 
 if __name__ == "__main__":
