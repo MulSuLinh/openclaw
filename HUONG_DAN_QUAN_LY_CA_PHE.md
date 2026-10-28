@@ -27,8 +27,8 @@ Trên một số máy Windows, dùng `py quan_ly_ca_phe.py`.
 7. Chọn **8** để xem báo cáo tháng.
 
 ## Nhập yêu cầu bằng tiếng Việt
-- Bộ nhận diện hiện tại dựa trên từ khóa, không phải mô hình AI; nó chỉ xử lý các yêu cầu thông dụng được lập trình sẵn.
-- Với các yêu cầu nhập/bán hàng, chương trình vẫn hỏi những trường còn thiếu như mã sản phẩm, số lượng, đơn giá và ngày giao dịch. Nó chưa tự trích xuất chính xác mọi trường từ một câu tự do.
+- Bộ nhận diện hiện tại dùng từ khóa và quy tắc trích xuất, chưa phải mô hình AI tổng quát.
+- Khi câu nhập/bán có đủ loại giao dịch, tên cà phê, số lượng kg và đơn giá VNĐ/kg, chương trình tự lưu và in kết quả. Nếu thiếu trường hoặc không đủ tồn kho, chương trình sẽ báo và hỏi thêm thay vì đoán.
 - Nếu chương trình không nhận ra câu, gõ `help` để xem ví dụ hoặc chọn số chức năng trên menu.
 
 ## Lưu ý
