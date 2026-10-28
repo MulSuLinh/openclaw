@@ -7,6 +7,9 @@ Dữ liệu được lưu cục bộ trong ca_phe_data.json. Giá thị trườn
 import json
 from datetime import date, datetime
 from pathlib import Path
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
+from zoneinfo import ZoneInfo
 
 DATA_FILE = Path(__file__).with_name("ca_phe_data.json")
 DEFAULT_PRODUCTS = [
@@ -126,6 +129,12 @@ def show_prices(data):
             else:
                 change = f" | không đổi so với {previous['date']}"
         print(f'{product["id"]}. {product["name"]}: {money(current)}/{product["unit"]}{change}')
+        matching = [p for p in data["price_history"] if p["product_id"] == product["id"] and p["date"] <= day]
+        if matching:
+            latest_entry = max(matching, key=lambda p: (p["date"], p.get("id", 0)))
+            if latest_entry.get("source"):
+                print(f'   Nguồn: {latest_entry["source"]} | Dữ liệu nguồn: {latest_entry.get("source_timestamp", latest_entry["date"])}')
+                print(f'   Lấy lúc: {latest_entry.get("fetched_at", "không rõ")} | {latest_entry.get("source_url", "")}')
     if not found:
         print("Chưa nhập giá nào. Hãy chọn chức năng cập nhật giá.")
     print("\nLưu ý: giá hiển thị là dữ liệu bạn đã nhập gần nhất tính đến ngày đã chọn.")
@@ -154,6 +163,79 @@ def update_prices(data):
     save_data(data)
     print("Đã lưu cập nhật giá. Xem mục giá theo ngày để so sánh thay đổi.")
 
+
+
+# Nguồn API công khai; trang nguồn yêu cầu ghi công và liên kết.
+MARKET_API_URL = "https://buonmathuotcoffee.com/api/v1/coffee-price"
+MARKET_SOURCE_NAME = "Buon Ma Thuot Coffee Portal"
+MARKET_SOURCE_URL = "https://buonmathuotcoffee.com/vietnam-coffee-data/api"
+
+
+def fetch_market_prices(data):
+    """Lấy giá tham khảo từ API; chỉ gán giá nội địa cho Robusta nhân xanh."""
+    request = Request(
+        MARKET_API_URL,
+        headers={"User-Agent": "OpenClaw-Coffee-Manager/1.0", "Accept": "application/json"},
+    )
+    try:
+        with urlopen(request, timeout=12) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except (HTTPError, URLError, TimeoutError, OSError, json.JSONDecodeError) as error:
+        print(f"Không lấy được giá từ Internet: {error}")
+        print("Kiểm tra kết nối rồi thử lại. Dữ liệu đã lưu trước đó vẫn được giữ nguyên.")
+        return
+
+    if payload.get("status") != "success" or not isinstance(payload.get("data"), dict):
+        print("Nguồn dữ liệu trả về định dạng không như mong đợi; không lưu dữ liệu.")
+        return
+    market = payload["data"]
+    local_price = (market.get("vietnam_farmgate") or {}).get("value")
+    timestamp_raw = market.get("timestamp")
+    try:
+        if not isinstance(local_price, (int, float)) or local_price <= 0:
+            raise ValueError("Thiếu giá thu mua nội địa hợp lệ")
+        source_time = datetime.fromisoformat(timestamp_raw.replace("Z", "+00:00"))
+        if source_time.tzinfo is None:
+            source_time = source_time.replace(tzinfo=ZoneInfo("UTC"))
+    except (AttributeError, TypeError, ValueError) as error:
+        print(f"Dữ liệu giá thiếu hoặc không hợp lệ: {error}. Không lưu.")
+        return
+
+    fetched_at = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh")).isoformat(timespec="seconds")
+    source_date = source_time.astimezone(ZoneInfo("Asia/Ho_Chi_Minh")).date().isoformat()
+    next_id = max((p.get("id", 0) for p in data["price_history"]), default=0) + 1
+    data["price_history"].append({
+        "id": next_id,
+        "product_id": 1,
+        "date": source_date,
+        "price": float(local_price),
+        "source": MARKET_SOURCE_NAME,
+        "source_url": MARKET_SOURCE_URL,
+        "market_type": "Chỉ số giá thu mua cà phê tại nông hộ Việt Nam (tham khảo)",
+        "source_timestamp": source_time.isoformat(timespec="seconds"),
+        "fetched_at": fetched_at,
+    })
+    save_data(data)
+
+    print("\n=== GIÁ CÀ PHÊ THAM KHẢO TỪ INTERNET ===")
+    print(f"Giá thu mua nội địa tham khảo (Robusta nhân xanh): {money(local_price)}/kg")
+    print(f"Robusta kỳ hạn ICE: {(market.get('ice_robusta') or {}).get('value', 'không có')} USD/tấn")
+    print(f"Arabica kỳ hạn ICE: {(market.get('ice_arabica') or {}).get('value', 'không có')} USD/lb theo dữ liệu API")
+    if isinstance(market.get("usd_vnd"), (int, float)):
+        print(f"Tỷ giá USD/VND từ nguồn: {market['usd_vnd']:,.2f}")
+    print(f"Thời điểm dữ liệu nguồn: {source_time.isoformat(timespec='seconds')}")
+    print(f"Thời điểm lấy dữ liệu (Việt Nam): {fetched_at}")
+    print(f"Nguồn: {MARKET_SOURCE_NAME} — {MARKET_SOURCE_URL}")
+    print("Đã lưu giá tham khảo vào lịch sử theo ngày.")
+    print("Lưu ý: chỉ số này không phải báo giá bảo đảm tại đại lý; giá API không được áp cho Arabica, cà phê rang hay hòa tan.")
+
+
+def show_latest_market_metadata(data):
+    entries = [p for p in data["price_history"] if p.get("source") == MARKET_SOURCE_NAME]
+    if entries:
+        latest = max(entries, key=lambda p: (p.get("fetched_at", ""), p.get("id", 0)))
+        print(f"  Nguồn: {latest['source']} | Dữ liệu nguồn: {latest.get('source_timestamp', 'không rõ')}")
+        print(f"  Lấy lúc: {latest.get('fetched_at', 'không rõ')} | {latest.get('source_url', MARKET_SOURCE_URL)}")
 
 def show_price_history(data):
     product = get_product(data)
@@ -280,6 +362,7 @@ def main():
         "6": ("Xem tồn kho", lambda: show_inventory(data)),
         "7": ("Lịch sử nhập và bán", lambda: show_transactions(data)),
         "8": ("Báo cáo doanh thu và lãi gộp", lambda: show_report(data)),
+        "9": ("Lấy giá tham khảo tự động từ Internet", lambda: fetch_market_prices(data)),
     }
     while True:
         print("\n" + "=" * 42)
@@ -295,7 +378,7 @@ def main():
         if choice in actions:
             actions[choice][1]()
         else:
-            print("Lựa chọn không hợp lệ. Hãy nhập từ 0 đến 8.")
+            print("Lựa chọn không hợp lệ. Hãy nhập từ 0 đến 9.")
 
 
 if __name__ == "__main__":
