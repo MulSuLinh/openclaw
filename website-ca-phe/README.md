@@ -136,3 +136,15 @@ Website có một khung chat nổi **“Hỏi Mộc AI”** ở góc dưới bê
 - Thêm câu hỏi gợi ý nhanh, ô nhập tin nhắn và phản hồi theo nhóm chủ đề.
 - Bổ sung thông báo rõ ràng về giới hạn của bản demo.
 - Đồng bộ phần giao diện trợ lý vào bản website-ca-phe trong openclaw và bản sao projects/moc-coffee trong python-journey.
+
+
+## Quản lý bán hàng và chi tiêu
+
+Mở trang [quan-ly.html](./quan-ly.html) để dùng bảng điều khiển quản lý Mộc Coffee.
+
+- **Bán hàng:** ghi ngày bán, sản phẩm, số lượng, đơn giá, khách hàng/mã đơn và hình thức thanh toán; hệ thống tự tính thành tiền.
+- **Chi tiêu:** ghi khoản chi, danh mục (nguyên liệu, mặt bằng, nhân sự, điện nước, vận chuyển, marketing...), số tiền và hình thức chi.
+- **Báo cáo:** xem tổng doanh thu, tổng chi tiêu, chênh lệch thu–chi và số giao dịch theo khoảng ngày; có thể xuất CSV để lưu hoặc mở bằng bảng tính.
+- **Lưu dữ liệu:** trình duyệt lưu dữ liệu trong `localStorage` trên thiết bị hiện tại.
+
+**Giới hạn:** Đây là trang demo phía trình duyệt, chưa có tài khoản đăng nhập, máy chủ hay cơ sở dữ liệu chung. Dữ liệu không tự đồng bộ giữa máy tính/điện thoại và đơn đặt hàng ở trang cửa hàng chưa tự động nhập vào bảng bán hàng. Không dùng bản demo này làm sổ kế toán chính thức hoặc lưu thông tin nhạy cảm.
