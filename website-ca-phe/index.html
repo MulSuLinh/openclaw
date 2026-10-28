@@ -19,10 +19,26 @@ section{padding:62px 0}.section-head{text-align:center;margin-bottom:30px}.secti
 @media(max-width:760px){.hero-grid{grid-template-columns:1fr}.hero-img{height:270px;max-width:440px;margin:auto}.products{grid-template-columns:1fr 1fr}.navlinks{display:none}.promise-grid{grid-template-columns:1fr}.hero{padding-top:44px}}
 @media(max-width:480px){.products{grid-template-columns:1fr}.product img{height:230px}.checkout{grid-template-columns:1fr}.checkout textarea,.checkout button{grid-column:auto}.hero h1{letter-spacing:-1px}}
 
+
+/* Trợ lý Mộc */
+.ai-launcher{position:fixed;right:22px;bottom:22px;z-index:20;border:0;border-radius:999px;background:var(--coffee);color:#fff;padding:14px 18px;font-weight:800;box-shadow:0 8px 28px #21171035;cursor:pointer}
+.ai-panel{position:fixed;right:22px;bottom:84px;z-index:20;width:min(360px,calc(100vw - 28px));height:min(500px,calc(100vh - 120px));background:#fffdf9;border:1px solid #e5d6c3;border-radius:20px;box-shadow:0 18px 55px #21171030;display:none;overflow:hidden;flex-direction:column}
+.ai-panel.open{display:flex}.ai-head{background:var(--coffee);color:white;padding:15px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}.ai-head strong{display:block}.ai-head small{color:#f0ddc5}.ai-close{border:0;background:transparent;color:white;font-size:1.4rem;cursor:pointer}.ai-messages{padding:14px;display:flex;flex-direction:column;gap:10px;overflow:auto;flex:1;background:#fbf6ed}.ai-message{max-width:90%;padding:10px 12px;border-radius:14px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:.92rem}.ai-message.bot{background:#fff;border:1px solid #eee1d0;align-self:flex-start}.ai-message.user{background:#4b2e20;color:white;align-self:flex-end}.ai-quick{display:flex;flex-wrap:wrap;gap:6px;padding:0 12px 10px;background:#fbf6ed}.ai-quick button{border:1px solid #d9c4a9;border-radius:999px;background:#fffaf2;color:var(--coffee);padding:7px 9px;font-size:.78rem;cursor:pointer}.ai-form{display:flex;gap:8px;padding:12px;border-top:1px solid #eee1d0;background:#fff}.ai-form input{min-width:0;flex:1;border:1px solid #ddcfbd;border-radius:999px;padding:11px 13px;font:inherit}.ai-form button{border:0;border-radius:999px;background:var(--gold);color:#211710;padding:0 14px;font-weight:800;cursor:pointer}.ai-note{font-size:.72rem;color:var(--muted);padding:0 13px 10px;background:#fff}
+
 </style>
 </head>
 <body>
 <header><div class="wrap"><nav><a class="logo" href="#">MỘC<span>.</span> COFFEE</a><div class="navlinks"><a href="#san-pham">Sản phẩm</a><a href="#ve-chung-toi">Về chúng tôi</a><a href="#dat-hang">Đặt hàng</a></div><a class="cartbtn" href="#dat-hang">Giỏ hàng (<span id="cart-count">0</span>)</a></nav></div></header>
+
+<button class="ai-launcher" id="ai-launcher" type="button" aria-controls="ai-panel" aria-expanded="false">☕ Hỏi Mộc AI</button>
+<aside class="ai-panel" id="ai-panel" aria-label="Trợ lý Mộc Coffee" aria-hidden="true">
+  <div class="ai-head"><div><strong>☕ Trợ lý Mộc Coffee</strong><small>Hỗ trợ chọn cà phê và đặt hàng</small></div><button class="ai-close" id="ai-close" type="button" aria-label="Đóng trợ lý">×</button></div>
+  <div class="ai-messages" id="ai-messages" aria-live="polite"><div class="ai-message bot">Xin chào! Mình có thể giúp bạn chọn cà phê, xem giá và hướng dẫn đặt hàng. Bạn muốn tìm hiểu điều gì?</div></div>
+  <div class="ai-quick"><button type="button" data-ai-prompt="Gợi ý cà phê cho người mới">Gợi ý cho người mới</button><button type="button" data-ai-prompt="Sản phẩm nào rẻ nhất?">Giá rẻ nhất</button><button type="button" data-ai-prompt="Cách đặt hàng thế nào?">Cách đặt hàng</button></div>
+  <form class="ai-form" id="ai-form"><input id="ai-input" aria-label="Tin nhắn" placeholder="Nhập câu hỏi..." autocomplete="off" required><button type="submit">Gửi</button></form>
+  <div class="ai-note">Bản trợ lý demo chạy tại trình duyệt, chưa kết nối mô hình AI trực tuyến.</div>
+</aside>
+
 <main>
 <section class="hero"><div class="wrap hero-grid"><div><div class="eyebrow">Hương vị từ cao nguyên</div><h1>Mỗi ngày một chút <span style="color:#9a672d">đậm đà.</span></h1><p>Cà phê Việt rang mộc, thơm tự nhiên và đậm vị. Chọn loại cà phê yêu thích để bắt đầu ngày mới theo cách của bạn.</p><a class="btn" href="#san-pham">Khám phá sản phẩm ↓</a></div><img class="hero-img" src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1000&q=85" alt="Hạt cà phê rang và tách cà phê"></div></section>
 <section id="san-pham"><div class="wrap"><div class="section-head"><div class="eyebrow">Góc cà phê</div><h2>Sản phẩm nổi bật</h2><p>Chọn hương vị hợp gu của bạn.</p></div><div class="filters" id="product-filters" aria-label="Lọc sản phẩm"><button class="filter active" type="button" data-filter="Tất cả">Tất cả</button><button class="filter" type="button" data-filter="Cà phê hạt & bột">Cà phê hạt & bột</button><button class="filter" type="button" data-filter="Cà phê tiện lợi">Cà phê tiện lợi</button><button class="filter" type="button" data-filter="Dụng cụ pha chế">Dụng cụ pha chế</button></div><div class="products" id="products"></div></div></section>
@@ -79,6 +95,32 @@ document.getElementById("order-form").addEventListener("submit",e=>{
  const order='ĐƠN ĐẶT HÀNG — MỘC COFFEE\nTên: '+document.getElementById("customer-name").value+'\nSĐT: '+document.getElementById("customer-phone").value+'\nĐịa chỉ: '+document.getElementById("customer-address").value+'\nSản phẩm:\n'+lines+'\nTổng: '+money(total)+'\nGhi chú: '+(document.getElementById("customer-note").value||'Không có');
  const box=document.getElementById("order-result");box.innerHTML='<p><strong>Đã tạo nội dung đơn hàng demo.</strong></p><textarea id="order-copy" readonly style="width:100%;min-height:190px;padding:12px;border:1px solid #ddcfbd;border-radius:10px"></textarea><button class="add" type="button" id="copy-order">Sao chép đơn hàng</button>';document.getElementById("order-copy").value=order;document.getElementById("copy-order").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(order);document.getElementById("copy-order").textContent="Đã sao chép!"}catch{document.getElementById("order-copy").select();document.execCommand("copy");document.getElementById("copy-order").textContent="Hãy sao chép nội dung đã chọn"}})
 });
+
+/* Trợ lý hỏi đáp Mộc Coffee: bản demo không cần API key */
+const aiLauncher=document.getElementById("ai-launcher");
+const aiPanel=document.getElementById("ai-panel");
+const aiMessages=document.getElementById("ai-messages");
+const aiInput=document.getElementById("ai-input");
+function toggleAi(open){aiPanel.classList.toggle("open",open);aiPanel.setAttribute("aria-hidden",String(!open));aiLauncher.setAttribute("aria-expanded",String(open));if(open)aiInput.focus()}
+aiLauncher.addEventListener("click",()=>toggleAi(!aiPanel.classList.contains("open")));
+document.getElementById("ai-close").addEventListener("click",()=>toggleAi(false));
+function addAiMessage(text,role){const message=document.createElement("div");message.className="ai-message "+role;message.textContent=text;aiMessages.appendChild(message);aiMessages.scrollTop=aiMessages.scrollHeight}
+function answerAi(question){
+ const q=question.toLocaleLowerCase("vi");
+ if(/xin chào|chào bạn|hello|hi\b/.test(q)) return "Xin chào bạn! Mình có thể tư vấn sản phẩm, giá cả và cách đặt hàng tại Mộc Coffee.";
+ if(/giá|bao nhiêu|rẻ nhất|thấp nhất/.test(q)){const cheapest=products.reduce((a,b)=>a.price<b.price?a:b);return "Giá sản phẩm trong danh mục mẫu từ "+money(cheapest.price)+". Mức giá thấp nhất hiện tại là "+cheapest.name+" — "+money(cheapest.price)+". Bạn có thể xem toàn bộ sản phẩm ở mục Sản phẩm."}
+ if(/gợi ý|tư vấn|nên mua|người mới|dễ uống|nhẹ/.test(q)) return "Nếu mới uống cà phê, bạn có thể thử Cà phê phối trộn ("+money(products.find(p=>p.name==="Cà phê phối trộn").price)+") vì mô tả sản phẩm là cân bằng, dễ uống. Thích hương thơm thanh thì thử Arabica thơm nhẹ ("+money(products.find(p=>p.name==="Arabica thơm nhẹ").price)+"). Đây là gợi ý dựa trên mô tả sản phẩm mẫu.";
+ if(/robusta|arabica|culi|moka|decaf|không caffeine|cold brew|phin|espresso/.test(q)){const p=products.find(p=>q.includes(p.name.toLocaleLowerCase("vi").split(" ")[0])||p.name.toLocaleLowerCase("vi").includes(q.trim()));if(p)return p.name+": "+p.desc+" Giá mẫu: "+money(p.price)+". Bạn có thể bấm “+ Thêm” để cho vào giỏ hàng.";return "Mộc Coffee có Robusta rang mộc, Arabica thơm nhẹ, cà phê phối trộn, Culi, Moka, decaf và nhiều lựa chọn khác. Bạn thích vị đậm hay thơm nhẹ?"}
+ if(/đặt hàng|mua hàng|giỏ hàng|thanh toán|đơn hàng/.test(q)) return "Cách đặt hàng: 1) Chọn sản phẩm và bấm “+ Thêm”. 2) Mở mục Giỏ hàng. 3) Điền tên, số điện thoại và địa chỉ. 4) Bấm “Tạo đơn hàng” rồi sao chép nội dung. Lưu ý: đây là bản demo, chưa gửi đơn đến cửa hàng và chưa có thanh toán trực tuyến.";
+ if(/giao hàng|vận chuyển|ship|phí ship|bao lâu/.test(q)) return "Website demo chưa có dữ liệu về phí hoặc thời gian giao hàng. Bạn nên xác nhận các thông tin này trực tiếp với cửa hàng trước khi đặt.";
+ if(/danh mục|loại nào|sản phẩm|có gì/.test(q)) return "Trang có 3 nhóm: Cà phê hạt & bột, Cà phê tiện lợi và Dụng cụ pha chế. Hãy vào mục Sản phẩm và chọn bộ lọc để xem từng nhóm.";
+ if(/ai thật|trí tuệ nhân tạo|mô hình|chatgpt|api/.test(q)) return "Hiện tại đây là trợ lý hỏi đáp theo từ khóa, chưa phải mô hình AI tạo sinh và chưa gọi API. Muốn có AI trả lời linh hoạt, cần tích hợp dịch vụ mô hình qua backend để bảo vệ API key.";
+ return "Mình chưa hiểu rõ câu hỏi này. Bạn thử hỏi về giá sản phẩm, gợi ý cà phê, danh mục hoặc cách đặt hàng nhé. Trợ lý hiện là bản demo hỏi đáp theo từ khóa.";
+}
+function submitAiQuestion(question){const value=question.trim();if(!value)return;addAiMessage(value,"user");aiInput.value="";addAiMessage(answerAi(value),"bot")}
+document.getElementById("ai-form").addEventListener("submit",e=>{e.preventDefault();submitAiQuestion(aiInput.value)});
+document.querySelectorAll("[data-ai-prompt]").forEach(button=>button.addEventListener("click",()=>submitAiQuestion(button.dataset.aiPrompt)));
+
 document.getElementById("year").textContent=new Date().getFullYear();renderCart();
 
 </script>
