@@ -108,8 +108,8 @@ def price_for(data, product_id, day=None):
     return max(entries, key=lambda p: (p["date"], p["id"]))["price"]
 
 
-def show_prices(data):
-    day = ask_date("Xem giá ngày YYYY-MM-DD (Enter = hôm nay): ")
+def show_prices(data, day=None):
+    day = day or date.today().isoformat()
     print(f"\n=== GIÁ CÀ PHÊ NGÀY {day} ===")
     found = False
     for product in data["products"]:
@@ -361,11 +361,121 @@ def normalize_request(text):
     return re.sub(r"[^a-z0-9]+", " ", text).strip()
 
 
+def parse_vietnamese_number(raw):
+    """Đọc số kiểu Việt Nam: 85.000, 1.250.000 hoặc 20,5."""
+    raw = raw.strip().replace(" ", "")
+    if not raw:
+        return None
+    if "." in raw and "," in raw:
+        # Dấu phân cách xuất hiện sau cùng thường là phần thập phân.
+        if raw.rfind(",") > raw.rfind("."):
+            raw = raw.replace(".", "").replace(",", ".")
+        else:
+            raw = raw.replace(",", "")
+    elif "," in raw:
+        tail = raw.rsplit(",", 1)[-1]
+        raw = raw.replace(",", ".") if len(tail) in (1, 2) else raw.replace(",", "")
+    elif "." in raw:
+        tail = raw.rsplit(".", 1)[-1]
+        if len(tail) == 3:
+            raw = raw.replace(".", "")
+    try:
+        value = float(raw)
+        return value if value > 0 else None
+    except ValueError:
+        return None
+
+
+def detect_product(data, request):
+    normalized = normalize_request(request)
+    aliases = [
+        (("robusta", "ca phe nhan xanh"), 1),
+        (("arabica",), 2),
+        (("rang hat", "ca phe rang"), 3),
+        (("rang xay",), 4),
+        (("hoa tan", "instant"), 5),
+    ]
+    for terms, product_id in aliases:
+        if any(term in normalized for term in terms):
+            return next((p for p in data["products"] if p["id"] == product_id), None)
+    return None
+
+
+def extract_transaction_details(data, raw):
+    """Trích loại giao dịch, mặt hàng, số lượng và đơn giá từ câu tự do."""
+    normalized = normalize_request(raw)
+    kind = "nhap" if any(k in normalized for k in ("nhap hang", "nhap kho", "mua ca phe", "vua nhap")) else None
+    if any(k in normalized for k in ("ban ca phe", "vua ban", "ban ra")):
+        kind = "ban"
+    product = detect_product(data, raw)
+    quantity = None
+    quantity_match = re.search(r"(?<!\d)(\d+(?:[.,]\d+)?)\s*(?:kg|kilo|kilogram)\b", raw, re.IGNORECASE)
+    if quantity_match:
+        quantity = parse_vietnamese_number(quantity_match.group(1))
+    price = None
+    price_patterns = [
+        r"(?:don\s*gia|gia)\s*(?:la|:|=)?\s*([\d.,]+)\s*(?:dong|đ|vnd)?\s*(?:/\s*kg)?",
+        r"([\d.,]+)\s*(?:dong|đ|vnd)\s*(?:/\s*kg)?",
+    ]
+    for pattern in price_patterns:
+        matches = list(re.finditer(pattern, raw, re.IGNORECASE))
+        for match in matches:
+            candidate = parse_vietnamese_number(match.group(1))
+            if candidate and candidate >= 1000:
+                price = candidate
+                break
+        if price:
+            break
+    return kind, product, quantity, price
+
+
 def handle_natural_request(data, request_text):
-    """Điều hướng một số yêu cầu tiếng Việt phổ biến trong CLI (không dùng AI)."""
+    """Xử lý yêu cầu thông dụng và tự điền các trường trích xuất được."""
     request = normalize_request(request_text)
     if not request:
         return False
+
+    # Trường hợp nhập/bán có đủ thông tin: lưu ngay, không hỏi lại từng trường.
+    kind, product, quantity, unit_price = extract_transaction_details(data, request_text)
+    if kind:
+        if product and quantity and unit_price:
+            available = stock_quantity(data, product["id"])
+            if kind == "ban" and quantity > available:
+                print(f"Không thể lưu giao dịch: tồn kho {available:g} {product['unit']}, yêu cầu bán {quantity:g} {product['unit']}.")
+                return True
+            day = date.today().isoformat()
+            note = "Tạo từ yêu cầu tiếng Việt"
+            next_id = max((t.get("id", 0) for t in data["transactions"]), default=0) + 1
+            transaction = {
+                "id": next_id, "type": kind, "product_id": product["id"],
+                "quantity": quantity, "unit_price": unit_price,
+                "total": round(quantity * unit_price, 2), "date": day, "note": note
+            }
+            if kind == "ban":
+                transaction["estimated_cost"] = round(quantity * average_cost(data, product["id"]), 2)
+            data["transactions"].append(transaction)
+            save_data(data)
+            action = "nhập" if kind == "nhap" else "bán"
+            print("\\n=== ĐÃ TỰ ĐỘNG LƯU GIAO DỊCH ===")
+            print(f"Mã giao dịch: #{next_id}")
+            print(f"Loại: {action} hàng")
+            print(f"Sản phẩm: {product['name']}")
+            print(f"Số lượng: {quantity:g} {product['unit']}")
+            print(f"Đơn giá: {money(unit_price)}/{product['unit']}")
+            print(f"Tổng tiền: {money(transaction['total'])}")
+            print(f"Ngày: {day}")
+            print("Dữ liệu đã lưu vào ca_phe_data.json.")
+            return True
+        print("Mình nhận ra yêu cầu giao dịch nhưng còn thiếu thông tin.")
+        if not product:
+            print("Bạn cần ghi loại cà phê, ví dụ Robusta hoặc Arabica.")
+        if not quantity:
+            print("Bạn cần ghi số lượng, ví dụ 20 kg.")
+        if not unit_price:
+            print("Bạn cần ghi đơn giá, ví dụ giá 85.000 đồng/kg.")
+        print("Chuyển sang nhập các trường còn thiếu:")
+        record_transaction(data, kind)
+        return True
 
     if any(word in request for word in ("gia ca phe", "xem gia", "gia hom nay", "bao gia", "gia robusta", "gia arabica")):
         show_prices(data)
@@ -374,7 +484,16 @@ def handle_natural_request(data, request_text):
         show_inventory(data)
         return True
     if any(word in request for word in ("lich su gia", "bien dong gia", "gia thay doi")):
-        show_price_history(data)
+        product = detect_product(data, request_text)
+        if product:
+            entries = sorted([p for p in data["price_history"] if p["product_id"] == product["id"]], key=lambda p: (p["date"], p.get("id", 0)))
+            print(f"\\n=== LỊCH SỬ GIÁ: {product['name']} ===")
+            if not entries:
+                print("Chưa có dữ liệu lịch sử cho mặt hàng này.")
+            for entry in entries:
+                print(f"{entry['date']}: {money(entry['price'])}/{product['unit']} | Nguồn: {entry.get('source', 'Người dùng nhập')}")
+        else:
+            show_price_history(data)
         return True
     if any(word in request for word in ("lich su giao dich", "lich su nhap", "lich su ban", "cac giao dich")):
         show_transactions(data)
@@ -385,14 +504,7 @@ def handle_natural_request(data, request_text):
     if any(word in request for word in ("cap nhat gia", "lay gia moi", "gia tu internet", "gia tren mang")):
         fetch_market_prices(data)
         return True
-    if any(word in request for word in ("nhap hang", "mua ca phe", "ghi nhan nhap")):
-        record_transaction(data, "nhap")
-        return True
-    if any(word in request for word in ("ban ca phe", "ghi nhan ban", "tao giao dich ban")):
-        record_transaction(data, "ban")
-        return True
     return False
-
 
 def show_request_help():
     print("\nBạn có thể gõ yêu cầu bằng tiếng Việt, ví dụ:")
