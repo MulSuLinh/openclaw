@@ -353,7 +353,7 @@ def show_report(data):
 
 def main():
     data = load_data()
-    print("\\nĐang thử cập nhật giá cà phê tham khảo từ Internet...")
+    print("\nĐang thử cập nhật giá cà phê tham khảo từ Internet...")
     fetch_market_prices(data)
     actions = {
         "1": ("Xem giá cà phê theo ngày", lambda: show_prices(data)),
