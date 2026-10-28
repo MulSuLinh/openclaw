@@ -332,8 +332,9 @@ def show_transactions(data):
               f'| {t["quantity"]:g} kg x {money(t["unit_price"])} = {money(t["total"])}{note}')
 
 
-def show_report(data):
-    month = input(f"Xem báo cáo tháng YYYY-MM (Enter = {date.today():%Y-%m}): ").strip()
+def show_report(data, month=None):
+    if month is None:
+        month = input(f"Xem báo cáo tháng YYYY-MM (Enter = {date.today():%Y-%m}): ").strip()
     if not month:
         month = date.today().strftime("%Y-%m")
     try:
@@ -499,7 +500,8 @@ def handle_natural_request(data, request_text):
         show_transactions(data)
         return True
     if any(word in request for word in ("bao cao", "doanh thu", "lai gop", "tong tien nhap")):
-        show_report(data)
+        month = date.today().strftime("%Y-%m") if any(word in request for word in ("thang nay", "thang hien tai", "thang nay")) else None
+        show_report(data, month=month)
         return True
     if any(word in request for word in ("cap nhat gia", "lay gia moi", "gia tu internet", "gia tren mang")):
         fetch_market_prices(data)
