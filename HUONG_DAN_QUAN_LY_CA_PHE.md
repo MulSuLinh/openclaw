@@ -2,7 +2,8 @@
 
 ## Chức năng
 - Theo dõi danh mục Robusta nhân xanh, Arabica nhân xanh, cà phê rang hạt, rang xay và hòa tan.
-- Tự lấy giá tham khảo qua API Internet khi mở chương trình; có thể chọn mục **9** để cập nhật lại bất cứ lúc nào.
+- Tự thử lấy giá tham khảo qua API Internet khi mở chương trình; có thể chọn mục **9** để cập nhật lại bất cứ lúc nào.
+- Có thể gõ một số yêu cầu tiếng Việt ở dòng menu, chẳng hạn “cho tôi biết giá cà phê hôm nay”, “xem tồn kho”, “báo cáo doanh thu” hoặc “lấy giá mới từ Internet”.
 - Lưu giá theo ngày, xem lịch sử tăng/giảm.
 - Ghi nhận mua/nhập hàng và bán hàng theo kg, đơn giá, ngày và ghi chú.
 - Theo dõi tồn kho, lịch sử giao dịch và báo cáo tháng về tiền nhập, doanh thu, lãi gộp ước tính.
@@ -24,6 +25,11 @@ Trên một số máy Windows, dùng `py quan_ly_ca_phe.py`.
 5. Chọn **6** để kiểm tra tồn kho.
 6. Chọn **1** hoặc **3** để xem giá theo ngày và lịch sử biến động.
 7. Chọn **8** để xem báo cáo tháng.
+
+## Nhập yêu cầu bằng tiếng Việt
+- Bộ nhận diện hiện tại dựa trên từ khóa, không phải mô hình AI; nó chỉ xử lý các yêu cầu thông dụng được lập trình sẵn.
+- Với các yêu cầu nhập/bán hàng, chương trình vẫn hỏi những trường còn thiếu như mã sản phẩm, số lượng, đơn giá và ngày giao dịch. Nó chưa tự trích xuất chính xác mọi trường từ một câu tự do.
+- Nếu chương trình không nhận ra câu, gõ `help` để xem ví dụ hoặc chọn số chức năng trên menu.
 
 ## Lưu ý
 - API giá tham khảo: [Buon Ma Thuot Coffee Portal](https://buonmathuotcoffee.com/vietnam-coffee-data/api). Tài liệu API hiện ghi không cần API key; nếu nhà cung cấp thay đổi chính sách, hãy kiểm tra tài liệu trước khi sử dụng.
