@@ -518,39 +518,67 @@ def show_request_help():
     print("- Nhập hàng cà phê / Bán cà phê")
     print("Lưu ý: đây là nhận diện từ khóa cơ bản, chưa phải trợ lý AI hiểu mọi câu.")
 
+def show_dashboard(data):
+    """Hiển thị vài thông tin ngắn gọn để người mới dễ bắt đầu."""
+    total_stock = sum(max(stock_quantity(data, p["id"]), 0) for p in data["products"])
+    today = date.today().isoformat()
+    today_sales = sum(
+        t["total"] for t in data["transactions"]
+        if t["type"] == "ban" and t["date"] == today
+    )
+    today_purchases = sum(
+        t["total"] for t in data["transactions"]
+        if t["type"] == "nhap" and t["date"] == today
+    )
+    print("\n" + "=" * 46)
+    print("       QUAN LY CA PHE - BAT DAU NHANH")
+    print("=" * 46)
+    print(f"Hom nay: {date.today().strftime('%d/%m/%Y')}")
+    print(f"So loai ca phe: {len(data['products'])}")
+    print(f"Tong luong hang con trong kho: {total_stock:g} kg")
+    print(f"Tien nhap hang hom nay: {money(today_purchases)}")
+    print(f"Doanh thu hom nay: {money(today_sales)}")
+    print("-" * 46)
+
+
 def main():
     data = load_data()
-    print("\nĐang thử cập nhật giá cà phê tham khảo từ Internet...")
-    fetch_market_prices(data)
     actions = {
-        "1": ("Xem giá cà phê theo ngày", lambda: show_prices(data)),
-        "2": ("Cập nhật giá từng ngày", lambda: update_prices(data)),
-        "3": ("Xem lịch sử biến động giá", lambda: show_price_history(data)),
-        "4": ("Nhập hàng/mua cà phê", lambda: record_transaction(data, "nhap")),
-        "5": ("Bán cà phê", lambda: record_transaction(data, "ban")),
-        "6": ("Xem tồn kho", lambda: show_inventory(data)),
-        "7": ("Lịch sử nhập và bán", lambda: show_transactions(data)),
-        "8": ("Báo cáo doanh thu và lãi gộp", lambda: show_report(data)),
-        "9": ("Lấy giá tham khảo tự động từ Internet", lambda: fetch_market_prices(data)),
+        "1": ("Xem gia ca phe", lambda: show_prices(data)),
+        "2": ("Nhap hang / mua ca phe", lambda: record_transaction(data, "nhap")),
+        "3": ("Ban ca phe", lambda: record_transaction(data, "ban")),
+        "4": ("Kiem tra hang trong kho", lambda: show_inventory(data)),
+        "5": ("Xem doanh thu va lai uoc tinh", lambda: show_report(data)),
+        "6": ("Xem lich su giao dich", lambda: show_transactions(data)),
+        "7": ("Cap nhat gia thu cong", lambda: update_prices(data)),
+        "8": ("Xem lich su gia", lambda: show_price_history(data)),
+        "9": ("Lay gia tham khao tu Internet", lambda: fetch_market_prices(data)),
     }
+
     while True:
-        print("\n" + "=" * 42)
-        print(" QUẢN LÝ KINH DOANH CÀ PHÊ")
-        print("=" * 42)
+        show_dashboard(data)
+        print("BAN MUON LAM GI?")
         for key, (label, _) in actions.items():
-            print(f"{key}. {label}")
-        print("0. Thoát")
-        choice = input("Chọn chức năng hoặc nhập yêu cầu bằng tiếng Việt (gõ 'help' để xem ví dụ): ").strip()
-        if choice == "0" or normalize_request(choice) in ("thoat", "ket thuc", "exit", "quit"):
-            print("Đã thoát chương trình.")
+            print(f" {key}. {label}")
+        print(" 0. Thoat chuong trinh")
+        print("\nMeo: Ban co the go yeu cau don gian, vi du:")
+        print(' - "nhap 20 kg Robusta gia 85000 dong/kg"')
+        print(' - "ban 5 kg Robusta gia 100000 dong/kg"')
+        print(' - "xem ton kho" hoac "bao cao thang nay"')
+
+        choice = input("\nNhap so 0-9 hoac yeu cau cua ban: ").strip()
+        normalized = normalize_request(choice)
+        if choice == "0" or normalized in ("thoat", "ket thuc", "exit", "quit"):
+            print("Da thoat chuong trinh. Du lieu da duoc luu.")
             break
         if choice in actions:
             actions[choice][1]()
-        elif normalize_request(choice) in ("help", "tro giup", "huong dan"):
+        elif normalized in ("help", "tro giup", "huong dan", "vi du"):
             show_request_help()
         elif not handle_natural_request(data, choice):
-            print("Mình chưa nhận diện được yêu cầu này.")
+            print("\nMinh chua hieu yeu cau nay.")
             show_request_help()
+        input("\nNhan Enter de quay lai menu...")
 
 
 if __name__ == "__main__":
