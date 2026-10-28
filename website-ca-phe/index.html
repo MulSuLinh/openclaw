@@ -28,7 +28,7 @@ section{padding:62px 0}.section-head{text-align:center;margin-bottom:30px}.secti
 </style>
 </head>
 <body>
-<header><div class="wrap"><nav><a class="logo" href="#">MỘC<span>.</span> COFFEE</a><div class="navlinks"><a href="#san-pham">Sản phẩm</a><a href="#ve-chung-toi">Về chúng tôi</a><a href="#dat-hang">Đặt hàng</a><a href="quan-ly.html">Quản lý</a></div><a class="cartbtn" href="#dat-hang">Giỏ hàng (<span id="cart-count">0</span>)</a></nav></div></header>
+<header><div class="wrap"><nav><a class="logo" href="#">MỘC<span>.</span> COFFEE</a><div class="navlinks"><a href="#san-pham">Sản phẩm</a><a href="#ve-chung-toi">Về chúng tôi</a><a href="#dat-hang">Đặt hàng</a><a href="#quan-ly">Quản lý</a></div><a class="cartbtn" href="#dat-hang">Giỏ hàng (<span id="cart-count">0</span>)</a></nav></div></header>
 
 <button class="ai-launcher" id="ai-launcher" type="button" aria-controls="ai-panel" aria-expanded="false">☕ Hỏi Mộc AI</button>
 <aside class="ai-panel" id="ai-panel" aria-label="Trợ lý Mộc Coffee" aria-hidden="true">
@@ -44,6 +44,109 @@ section{padding:62px 0}.section-head{text-align:center;margin-bottom:30px}.secti
 <section id="san-pham"><div class="wrap"><div class="section-head"><div class="eyebrow">Góc cà phê</div><h2>Sản phẩm nổi bật</h2><p>Chọn hương vị hợp gu của bạn.</p></div><div class="filters" id="product-filters" aria-label="Lọc sản phẩm"><button class="filter active" type="button" data-filter="Tất cả">Tất cả</button><button class="filter" type="button" data-filter="Cà phê hạt & bột">Cà phê hạt & bột</button><button class="filter" type="button" data-filter="Cà phê tiện lợi">Cà phê tiện lợi</button><button class="filter" type="button" data-filter="Dụng cụ pha chế">Dụng cụ pha chế</button></div><div class="products" id="products"></div></div></section>
 <section class="promise" id="ve-chung-toi"><div class="wrap"><div class="section-head"><div class="eyebrow">Cam kết Mộc Coffee</div><h2>Đơn giản, thật lòng, chất lượng</h2></div><div class="promise-grid"><article><div class="emoji">☕</div><h3>Hương vị nguyên bản</h3><p>Thông tin sản phẩm rõ ràng, ưu tiên hương vị cà phê tự nhiên.</p></article><article><div class="emoji">🌱</div><h3>Chọn lọc kỹ càng</h3><p>Gợi ý nhiều lựa chọn từ cà phê hạt đến cà phê xay.</p></article><article><div class="emoji">📦</div><h3>Đặt hàng dễ dàng</h3><p>Thêm sản phẩm vào giỏ và gửi thông tin đặt hàng ngay trên trang.</p></article></div></div></section>
 <section id="dat-hang"><div class="wrap"><div class="section-head"><div class="eyebrow">Đặt hàng</div><h2>Giỏ hàng của bạn</h2><p>Kiểm tra số lượng rồi điền thông tin nhận hàng.</p></div><div class="cart-panel"><div id="cart-items">Giỏ hàng đang trống. Hãy chọn sản phẩm bên trên nhé!</div><div class="cart-total"><span>Tổng cộng</span><span id="cart-total">0đ</span></div><form class="checkout" id="order-form"><input id="customer-name" placeholder="Tên người nhận" required><input id="customer-phone" placeholder="Số điện thoại" type="tel" required><input id="customer-address" placeholder="Địa chỉ nhận hàng" required style="grid-column:1/-1"><textarea id="customer-note" placeholder="Ghi chú (nếu có)"></textarea><button class="btn" type="submit">Tạo đơn hàng</button></form><p class="notice">Đây là bản demo: đơn hàng sẽ được tạo thành nội dung để bạn sao chép. Trang chưa kết nối thanh toán hoặc hệ thống lưu đơn.</p><div id="order-result" aria-live="polite"></div></div></div></section>
+
+<section id="quan-ly" class="management-area"><div class="mc-wrap"><style>
+.management-area{--coffee:#4b2e20;--dark:#211710;--cream:#fbf6ed;--gold:#c58b45;--muted:#776b60;--line:#eadfce;--white:#fff}
+.management-area *{box-sizing:border-box}
+.management-area a{color:inherit;text-decoration:none}
+.management-area button,.management-area input,.management-area select,.management-area textarea{font:inherit}
+.management-area button{cursor:pointer}
+.management-area .mc-wrap{width:min(1180px,94%);margin:auto}
+.management-area .top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0}
+.management-area .logo{font-size:1.25rem;font-weight:900;color:var(--coffee)}
+.management-area .logo span{color:var(--gold)}
+.management-area .back{color:var(--coffee);font-weight:700}
+.management-area .mc-hero{padding:28px 0 18px}
+.management-area .mc-eyebrow{margin:0;color:#96652e;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;font-size:.76rem}
+.management-area .mc-hero h1{margin:6px 0;font-size:clamp(1.65rem,4vw,2.4rem);line-height:1.15}
+.management-area .mc-sub{margin:8px 0 0;color:var(--muted);max-width:760px}
+.management-area .mc-notice{margin:14px 0 20px;padding:12px 14px;background:#fff7e8;border:1px solid #ead2aa;border-radius:12px;color:#694a25;font-size:.92rem}
+.management-area .mc-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}
+.management-area .mc-stat{padding:18px;background:var(--white);border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 18px #4b2e2008}
+.management-area .mc-stat span{display:block;color:var(--muted);font-size:.87rem}
+.management-area .mc-stat strong{display:block;font-size:clamp(1.1rem,2vw,1.7rem);margin-top:7px;overflow-wrap:anywhere}
+.management-area .mc-stat.mc-profit strong{color:#286547}
+.management-area .mc-filters{display:flex;align-items:end;gap:10px;flex-wrap:wrap;padding:14px;background:#f1e7d9;border-radius:14px;margin-bottom:20px}
+.management-area .mc-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.management-area .mc-filters .mc-field{min-width:150px}
+.management-area .mc-field label{font-size:.85rem;font-weight:700;color:#554337}
+.management-area .mc-field input,.management-area .mc-field select,.management-area .mc-field textarea{width:100%;min-height:42px;border:1px solid #d9c8b5;border-radius:9px;padding:9px 10px;background:#fff;color:var(--dark)}
+.management-area .mc-field textarea{min-height:78px;resize:vertical}
+.management-area .mc-btn{border:0;border-radius:9px;padding:10px 14px;background:var(--coffee);color:#fff;font-weight:800;min-height:42px}
+.management-area .mc-btn.mc-gold{background:var(--gold);color:var(--dark)}
+.management-area .mc-btn.mc-light{background:#fff;border:1px solid #d9c8b5;color:var(--coffee)}
+.management-area .mc-btn.mc-danger{background:#a53d31;color:#fff}
+.management-area .mc-layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:22px}
+.management-area .mc-panel{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;min-width:0}
+.management-area .mc-panel-head{padding:16px 18px;border-bottom:1px solid var(--line)}
+.management-area .mc-panel-head h2{font-size:1.12rem;margin:0}
+.management-area .mc-panel-head p{font-size:.86rem;color:var(--muted);margin:5px 0 0}
+.management-area .mc-panel-body{padding:18px}
+.management-area .mc-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.management-area .mc-field.mc-full{grid-column:1/-1}
+.management-area .mc-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.management-area .mc-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:18px 18px 10px}
+.management-area .mc-section-head h2{margin:0;font-size:1.15rem}
+.management-area .mc-table-wrap{overflow:auto;width:100%;padding:0 12px 12px}
+.management-area table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:.9rem}
+.management-area th,.management-area td{text-align:left;padding:11px 9px;border-bottom:1px solid #f0e7db}
+.management-area th{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.management-area td.mc-money{font-weight:800}
+.management-area td .mc-delete{border:1px solid #e5c7c1;border-radius:7px;background:#fff7f5;color:#963b31;padding:5px 8px;font-size:.8rem;font-weight:700}
+.management-area .mc-empty{text-align:center;color:var(--muted);padding:25px}
+.management-area .mc-footnote{color:var(--muted);font-size:.82rem;margin:22px 0 30px}
+@media(max-width:850px){
+.management-area .mc-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.management-area .mc-layout{grid-template-columns:1fr}}@media(max-width:520px){
+.management-area .mc-form-grid{grid-template-columns:1fr}
+.management-area .mc-field.mc-full{grid-column:auto}
+.management-area .top{align-items:flex-start}
+.management-area .mc-stats{gap:9px}
+.management-area .mc-stat{padding:13px}
+.management-area .mc-filters .mc-field{flex:1;min-width:130px}}
+</style>
+
+<section class="mc-hero"><p class="mc-eyebrow">Bảng điều khiển nội bộ · Bản demo</p><h1>Quản lý bán hàng & chi tiêu</h1><p class="mc-sub">Ghi nhận các giao dịch bán hàng, theo dõi chi phí và xem kết quả thu–chi của Mộc Coffee.</p></section>
+<div class="mc-notice"><strong>Lưu ý:</strong> Đây là bản demo tĩnh. Dữ liệu được lưu trong bộ nhớ cục bộ (localStorage) của trình duyệt này, không đồng bộ qua thiết bị khác và chưa có đăng nhập, máy chủ hay cơ sở dữ liệu. Đơn hàng trên trang cửa hàng không tự chuyển vào bảng này; cần ghi nhận bán hàng tại đây.</div>
+<section class="mc-stats" aria-label="Tổng quan tài chính">
+<div class="mc-stat"><span>Doanh thu theo bộ lọc</span><strong id="stat-revenue">0 ₫</strong></div>
+<div class="mc-stat"><span>Chi tiêu theo bộ lọc</span><strong id="stat-expenses">0 ₫</strong></div>
+<div class="mc-stat mc-profit"><span>Chênh lệch thu − chi</span><strong id="stat-profit">0 ₫</strong></div>
+<div class="mc-stat"><span>Số giao dịch bán hàng</span><strong id="stat-sales-count">0</strong></div>
+</section>
+<section class="mc-filters" aria-label="Lọc theo ngày">
+<div class="mc-field"><label for="filter-from">Từ ngày</label><input type="date" id="filter-from"></div>
+<div class="mc-field"><label for="filter-to">Đến ngày</label><input type="date" id="filter-to"></div>
+<button class="mc-btn" id="apply-filter" type="button">Lọc dữ liệu</button><button class="mc-btn mc-light" id="clear-filter" type="button">Tất cả thời gian</button>
+</section>
+<section class="mc-layout">
+<article class="mc-panel"><div class="mc-panel-head"><h2>＋ Ghi nhận bán hàng</h2><p>Nhập giao dịch đã bán để tính doanh thu.</p></div><div class="mc-panel-body">
+<form id="sale-form"><div class="mc-form-grid">
+<div class="mc-field"><label for="sale-date">Ngày bán *</label><input id="sale-date" name="date" type="date" required></div>
+<div class="mc-field"><label for="sale-product">Tên sản phẩm *</label><input id="sale-product" name="product" list="product-list" maxlength="100" placeholder="VD: Robusta rang mộc" required><datalist id="product-list"><option value="Robusta rang mộc"><option value="Arabica thơm nhẹ"><option value="Cà phê phối trộn"><option value="Cà phê phin"><option value="Cà phê pha máy"><option value="Trà và đồ uống khác"></datalist></div>
+<div class="mc-field"><label for="sale-qty">Số lượng *</label><input id="sale-qty" name="qty" type="number" min="1" step="1" value="1" required></div>
+<div class="mc-field"><label for="sale-price">Đơn giá (VNĐ) *</label><input id="sale-price" name="price" type="number" min="0" step="1000" placeholder="120000" required></div>
+<div class="mc-field"><label for="sale-customer">Khách hàng (không bắt buộc)</label><input id="sale-customer" name="customer" maxlength="100" placeholder="Tên khách / mã đơn"></div>
+<div class="mc-field"><label for="sale-payment">Thanh toán</label><select id="sale-payment" name="payment"><option>Tiền mặt</option><option>Chuyển khoản</option><option>Thẻ</option><option>Khác</option></select></div>
+<div class="mc-field mc-full"><label for="sale-note">Ghi chú</label><input id="sale-note" name="note" maxlength="240" placeholder="Ghi chú đơn hàng (nếu có)"></div>
+</div><div class="mc-actions"><button class="mc-btn mc-gold" type="submit">Lưu giao dịch bán hàng</button></div></form>
+</div></article>
+<article class="mc-panel"><div class="mc-panel-head"><h2>－ Ghi nhận chi tiêu</h2><p>Nhập các khoản chi vận hành, nguyên liệu hoặc chi phí khác.</p></div><div class="mc-panel-body">
+<form id="expense-form"><div class="mc-form-grid">
+<div class="mc-field"><label for="expense-date">Ngày chi *</label><input id="expense-date" name="date" type="date" required></div>
+<div class="mc-field"><label for="expense-title">Khoản chi *</label><input id="expense-title" name="title" maxlength="120" placeholder="VD: Mua hạt cà phê" required></div>
+<div class="mc-field"><label for="expense-category">Danh mục</label><select id="expense-category" name="category"><option>Nguyên liệu</option><option>Mặt bằng</option><option>Nhân sự</option><option>Điện nước</option><option>Vận chuyển</option><option>Marketing</option><option>Dụng cụ, thiết bị</option><option>Khác</option></select></div>
+<div class="mc-field"><label for="expense-amount">Số tiền (VNĐ) *</label><input id="expense-amount" name="amount" type="number" min="1" step="1000" placeholder="500000" required></div>
+<div class="mc-field"><label for="expense-payment">Hình thức chi</label><select id="expense-payment" name="payment"><option>Tiền mặt</option><option>Chuyển khoản</option><option>Thẻ</option><option>Khác</option></select></div>
+<div class="mc-field"><label for="expense-note">Ghi chú</label><input id="expense-note" name="note" maxlength="240" placeholder="Nhà cung cấp, hóa đơn..."></div>
+</div><div class="mc-actions"><button class="mc-btn mc-gold" type="submit">Lưu khoản chi</button></div></form>
+</div></article>
+</section>
+<section class="mc-panel" style="margin-bottom:18px"><div class="mc-section-head"><h2>Danh sách bán hàng</h2><button class="mc-btn mc-light" type="button" id="export-sales">Xuất CSV bán hàng</button></div><div class="mc-table-wrap"><table><thead><tr><th>Ngày</th><th>Sản phẩm</th><th>Khách hàng / mã</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th><th>Thanh toán</th><th>Thao tác</th></tr></thead><tbody id="sales-body"><tr><td class="mc-empty" colspan="8">Chưa có giao dịch bán hàng.</td></tr></tbody></table></div></section>
+<section class="mc-panel"><div class="mc-section-head"><h2>Danh sách chi tiêu</h2><button class="mc-btn mc-light" type="button" id="export-expenses">Xuất CSV chi tiêu</button></div><div class="mc-table-wrap"><table><thead><tr><th>Ngày</th><th>Khoản chi</th><th>Danh mục</th><th>Số tiền</th><th>Thanh toán</th><th>Ghi chú</th><th>Thao tác</th></tr></thead><tbody id="expenses-body"><tr><td class="mc-empty" colspan="7">Chưa có khoản chi.</td></tr></tbody></table></div></section>
+<p class="mc-footnote">Mẹo: hãy xuất CSV định kỳ để lưu bản sao. Không nhập thông tin nhạy cảm của khách hàng vào bản demo này.</p>
+
+</div></section>
 </main>
 <footer><div class="wrap"><strong>MỘC COFFEE</strong><p>Cà phê ngon, bắt đầu từ những điều giản dị.</p><p>© <span id="year"></span> Mộc Coffee · Website demo</p></div></footer>
 <script>
@@ -122,6 +225,64 @@ document.getElementById("ai-form").addEventListener("submit",e=>{e.preventDefaul
 document.querySelectorAll("[data-ai-prompt]").forEach(button=>button.addEventListener("click",()=>submitAiQuestion(button.dataset.aiPrompt)));
 
 document.getElementById("year").textContent=new Date().getFullYear();renderCart();
+
+</script>
+<script>
+
+(function(){
+"use strict";
+var STORAGE_KEY="mocCoffeeManagement_v1";
+var state={sales:[],expenses:[]};
+var money=new Intl.NumberFormat("vi-VN",{style:"currency",currency:"VND",maximumFractionDigits:0});
+function localDate(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function esc(value){return String(value==null?"":value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");}
+function fmtDate(value){if(!value)return "—";var p=value.split("-");return p.length===3?p[2]+"/"+p[1]+"/"+p[0]:value;}
+function amount(value){return money.format(Number(value)||0);}
+function read(){try{var parsed=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");state.sales=Array.isArray(parsed.sales)?parsed.sales:[];state.expenses=Array.isArray(parsed.expenses)?parsed.expenses:[];}catch(e){state={sales:[],expenses:[]};}}
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){alert("Trình duyệt không cho phép lưu dữ liệu. Hãy kiểm tra cài đặt bộ nhớ của trình duyệt.");}}
+function inRange(item){var from=document.getElementById("filter-from").value;var to=document.getElementById("filter-to").value;return (!from||item.date>=from)&&(!to||item.date<=to);}
+function filteredSales(){return state.sales.filter(inRange).slice().sort(function(a,b){return b.date.localeCompare(a.date)||b.id-a.id;});}
+function filteredExpenses(){return state.expenses.filter(inRange).slice().sort(function(a,b){return b.date.localeCompare(a.date)||b.id-a.id;});}
+function render(){
+var sales=filteredSales(),expenses=filteredExpenses();
+var revenue=sales.reduce(function(sum,x){return sum+(Number(x.total)||0);},0);
+var spent=expenses.reduce(function(sum,x){return sum+(Number(x.amount)||0);},0);
+document.getElementById("stat-revenue").textContent=amount(revenue);
+document.getElementById("stat-expenses").textContent=amount(spent);
+document.getElementById("stat-profit").textContent=amount(revenue-spent);
+document.getElementById("stat-sales-count").textContent=String(sales.length);
+var sb=document.getElementById("sales-body");
+sb.innerHTML=sales.length?sales.map(function(x){return "<tr><td>"+esc(fmtDate(x.date))+"</td><td>"+esc(x.product)+"</td><td>"+esc(x.customer||"—")+"</td><td>"+esc(x.qty)+"</td><td class='money'>"+esc(amount(x.price))+"</td><td class='money'>"+esc(amount(x.total))+"</td><td>"+esc(x.payment)+"</td><td><button class='delete' type='button' data-delete-sale='"+esc(x.id)+"'>Xóa</button></td></tr>";}).join(""):"<tr><td class='empty' colspan='8'>Chưa có giao dịch trong khoảng ngày đã chọn.</td></tr>";
+var eb=document.getElementById("expenses-body");
+eb.innerHTML=expenses.length?expenses.map(function(x){return "<tr><td>"+esc(fmtDate(x.date))+"</td><td>"+esc(x.title)+"</td><td>"+esc(x.category)+"</td><td class='money'>"+esc(amount(x.amount))+"</td><td>"+esc(x.payment)+"</td><td>"+esc(x.note||"—")+"</td><td><button class='delete' type='button' data-delete-expense='"+esc(x.id)+"'>Xóa</button></td></tr>";}).join(""):"<tr><td class='empty' colspan='7'>Chưa có khoản chi trong khoảng ngày đã chọn.</td></tr>";
+}
+function csvEscape(v){return '"'+String(v==null?"":v).replace(/"/g,'""')+'"';}
+function downloadCsv(filename,rows){var csv="\uFEFF"+rows.map(function(row){return row.map(csvEscape).join(",");}).join("\r\n");var blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});var url=URL.createObjectURL(blob);var a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);}
+document.getElementById("sale-date").value=localDate();
+document.getElementById("expense-date").value=localDate();
+document.getElementById("sale-form").addEventListener("submit",function(e){
+e.preventDefault();var f=new FormData(e.currentTarget);var qty=Number(f.get("qty")),price=Number(f.get("price"));
+if(!Number.isInteger(qty)||qty<1||!Number.isFinite(price)||price<0){alert("Vui lòng kiểm tra số lượng và đơn giá.");return;}
+state.sales.push({id:Date.now()+Math.floor(Math.random()*1000),date:String(f.get("date")),product:String(f.get("product")).trim(),qty:qty,price:price,total:qty*price,customer:String(f.get("customer")||"").trim(),payment:String(f.get("payment")),note:String(f.get("note")||"").trim()});
+save();e.currentTarget.reset();document.getElementById("sale-date").value=localDate();document.getElementById("sale-qty").value="1";render();
+});
+document.getElementById("expense-form").addEventListener("submit",function(e){
+e.preventDefault();var f=new FormData(e.currentTarget);var amountValue=Number(f.get("amount"));
+if(!Number.isFinite(amountValue)||amountValue<=0){alert("Số tiền chi phải lớn hơn 0.");return;}
+state.expenses.push({id:Date.now()+Math.floor(Math.random()*1000),date:String(f.get("date")),title:String(f.get("title")).trim(),category:String(f.get("category")),amount:amountValue,payment:String(f.get("payment")),note:String(f.get("note")||"").trim()});
+save();e.currentTarget.reset();document.getElementById("expense-date").value=localDate();render();
+});
+document.getElementById("apply-filter").addEventListener("click",function(){var from=document.getElementById("filter-from").value,to=document.getElementById("filter-to").value;if(from&&to&&from>to){alert("Ngày bắt đầu không được sau ngày kết thúc.");return;}render();});
+document.getElementById("clear-filter").addEventListener("click",function(){document.getElementById("filter-from").value="";document.getElementById("filter-to").value="";render();});
+document.addEventListener("click",function(e){
+var saleId=e.target.getAttribute("data-delete-sale");var expenseId=e.target.getAttribute("data-delete-expense");
+if(saleId&&confirm("Xóa giao dịch bán hàng này?")){state.sales=state.sales.filter(function(x){return String(x.id)!==saleId;});save();render();}
+if(expenseId&&confirm("Xóa khoản chi này?")){state.expenses=state.expenses.filter(function(x){return String(x.id)!==expenseId;});save();render();}
+});
+document.getElementById("export-sales").addEventListener("click",function(){var rows=[["Ngày","Sản phẩm","Khách hàng/mã","Số lượng","Đơn giá","Thành tiền","Thanh toán","Ghi chú"]];filteredSales().forEach(function(x){rows.push([x.date,x.product,x.customer,x.qty,x.price,x.total,x.payment,x.note]);});downloadCsv("moc-coffee-ban-hang.csv",rows);});
+document.getElementById("export-expenses").addEventListener("click",function(){var rows=[["Ngày","Khoản chi","Danh mục","Số tiền","Thanh toán","Ghi chú"]];filteredExpenses().forEach(function(x){rows.push([x.date,x.title,x.category,x.amount,x.payment,x.note]);});downloadCsv("moc-coffee-chi-tieu.csv",rows);});
+read();render();
+})();
 
 </script>
 </body></html>
