@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Quản lý kinh doanh cà phê: giá theo ngày, nhập hàng, bán hàng và tồn kho.
 
-Dữ liệu được lưu cục bộ trong ca_phe_data.json. Giá thị trường không được tự
-động lấy từ Internet; người dùng cập nhật theo nguồn giá đáng tin cậy.
+Dữ liệu được lưu cục bộ trong ca_phe_data.json. Chương trình thử lấy giá tham khảo
+từ API Internet và nhận diện một số yêu cầu tiếng Việt bằng từ khóa cơ bản.
 """
 import json
 import re
@@ -367,7 +367,7 @@ def handle_natural_request(data, request_text):
     if not request:
         return False
 
-    if any(word in request for word in ("gia ca phe", "gia hom nay", "bao gia", "gia robusta", "gia arabica")):
+    if any(word in request for word in ("gia ca phe", "xem gia", "gia hom nay", "bao gia", "gia robusta", "gia arabica")):
         show_prices(data)
         return True
     if any(word in request for word in ("ton kho", "con bao nhieu", "hang con", "kiem ke")):
@@ -395,7 +395,7 @@ def handle_natural_request(data, request_text):
 
 
 def show_request_help():
-    print("\\nBạn có thể gõ yêu cầu bằng tiếng Việt, ví dụ:")
+    print("\nBạn có thể gõ yêu cầu bằng tiếng Việt, ví dụ:")
     print("- Cho tôi biết giá cà phê hôm nay")
     print("- Xem tồn kho hiện tại")
     print("- Xem lịch sử giá")
